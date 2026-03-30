@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { Capacitor } from '@capacitor/core';
 
-// On native, hit the deployed API; on web, use Vite proxy
-const BASE_URL = Capacitor.isNativePlatform()
-  ? 'https://api.gigdrive.app/api/v1' // Replace with your production API URL
-  : '/api/v1';
+// API URL: use Vite proxy in dev, Render in production/native
+const BASE_URL = import.meta.env.DEV
+  ? '/api/v1' // Vite proxy in development
+  : Capacitor.isNativePlatform()
+    ? 'https://gigdrive-api.onrender.com/api/v1'
+    : 'https://gigdrive-api.onrender.com/api/v1';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
