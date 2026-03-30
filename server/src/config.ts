@@ -5,10 +5,16 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Try .env first, fall back to env.txt
-const envPath = path.resolve(__dirname, '../.env');
-const envTxtPath = path.resolve(__dirname, '../env.txt');
-dotenv.config({ path: existsSync(envPath) ? envPath : envTxtPath });
+// Only load .env/.env.txt in development — in production, use platform env vars
+if (!process.env.RENDER) {
+  const envPath = path.resolve(__dirname, '../.env');
+  const envTxtPath = path.resolve(__dirname, '../env.txt');
+  if (existsSync(envPath)) {
+    dotenv.config({ path: envPath });
+  } else if (existsSync(envTxtPath)) {
+    dotenv.config({ path: envTxtPath });
+  }
+}
 
 const isDev = process.env.NODE_ENV !== 'production';
 
