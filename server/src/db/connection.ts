@@ -5,7 +5,7 @@ import type { Database } from './types.js';
 
 const pool = new Pool({
   connectionString: config.databaseUrl,
-  ssl: config.isDev ? { rejectUnauthorized: false } : { rejectUnauthorized: true },
+  ssl: { rejectUnauthorized: false },
   max: 10,
 });
 
