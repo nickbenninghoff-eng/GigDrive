@@ -75,9 +75,9 @@ router.post('/register', registerLimiter, validate(registerSchema), async (req, 
       },
       token,
     });
-  } catch (err) {
-    console.error('Register error:', err);
-    res.status(500).json({ error: 'Registration failed' });
+  } catch (err: any) {
+    console.error('Register error:', err?.message || err);
+    res.status(500).json({ error: 'Registration failed', ...(process.env.NODE_ENV !== 'production' && { detail: err?.message }) });
   }
 });
 
@@ -99,7 +99,7 @@ router.post('/login', loginLimiter, validate(loginSchema), async (req, res) => {
 
     // Constant-time comparison: always run bcrypt even if user doesn't exist
     // This prevents timing attacks that reveal which emails are registered
-    const dummyHash = '$2a$12$000000000000000000000uGWHIB/R2hJMYaHVMXxmMJfMBQuVBAQe';
+    const dummyHash = '$2b$12$SY4r9SSjWN79.8yo8Ax/H.ruwScrXaX2G5BUz4BybrxB3.ap.bcnu';
     const validPassword = await bcrypt.compare(password, user?.password_hash || dummyHash);
 
     if (!user || !validPassword) {
